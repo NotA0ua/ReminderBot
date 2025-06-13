@@ -1,11 +1,12 @@
 from aiogram import Router, types
 from aiogram.filters import CommandStart
+from aiogram_i18n import I18nContext
 
-router = Router()
+router = Router(name=__name__)
 
 
 @router.message(CommandStart)
-async def start_handler(message: types.Message) -> None:
+async def start_handler(message: types.Message, i18n: I18nContext) -> None:
     await message.answer(
-        f"Hello, {message.from_user.full_name}!\nThis is a reminder bot. It allows you to easily create scheduled reminders."
+        i18n.get("hello", user=message.from_user.username),
     )
