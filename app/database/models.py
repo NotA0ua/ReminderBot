@@ -12,11 +12,7 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(String)
-    first_name: Mapped[str] = mapped_column(String)
-    reminders: Mapped[List["Reminder"]] = relationship(
-        "Reminder", back_populates="user"
-    )
+    language: Mapped[str] = mapped_column(String, default="ru")
 
 
 class Reminder(Base):
@@ -24,8 +20,8 @@ class Reminder(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
+    name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(String)
     trigger_time: Mapped[datetime] = mapped_column(DateTime)
     repeat_interval: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    active: Mapped[bool] = mapped_column(Boolean, default=True)
-    user: Mapped["User"] = relationship("User", back_populates="reminders")
+    active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
