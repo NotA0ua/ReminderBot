@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,10 +10,12 @@ class UserOperations:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create_user(self, user_id: int) -> User:
-        user = User(id=user_id)
+    async def create_user(self, user_id: int, language: str) -> User:
+        user = User(id=user_id, language=language)
         self.session.add(user)
         await self.session.flush()
+
+        logging.info(f"User's created ({user_id} {language})")
         return user
 
     async def get_user(self, user_id: int) -> User | None:

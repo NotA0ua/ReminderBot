@@ -18,9 +18,9 @@ class Database:
         async with self.engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
 
-    async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
+    async def get_session(self) -> AsyncSession | None:
         async with self.session() as session:
-            yield session
+            return session
 
     async def dispose(self) -> None:
         await self.engine.dispose()

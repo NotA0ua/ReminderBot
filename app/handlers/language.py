@@ -10,5 +10,5 @@ router = Router(name=__name__)
 @router.message(Command("lang"))
 async def lang(message: types.Message, i18n: I18nContext):
     await message.reply(
-        i18n.get("cur-lang", i18n.locale), reply_markup=language_keyboard()
+        i18n.get("lang", i18n.locale), reply_markup=language_keyboard().reply_markup()
     )
