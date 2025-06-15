@@ -1,4 +1,7 @@
-hello = Hello, _{ $user }_!
+hello = 👋 Hello, _{ $user }_!
     This is a *reminder bot*. It allows you to easily create scheduled reminders.
 back = 🔙 Back
-lang = 🇺🇸 Choose language:
+flag = 🇺🇸
+lang = {flag} Choose language:
+lang_button = {flag}
+lang_result = ✅

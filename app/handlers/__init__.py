@@ -2,13 +2,13 @@ from aiogram import Router
 
 def setup_routers() -> Router:
     from . import start
-    from . import language
+    from . import locale
 
     router = Router()
 
     router.include_routers(
         start.router,
-        language.router,
+        locale.router,
     )
 
     return router

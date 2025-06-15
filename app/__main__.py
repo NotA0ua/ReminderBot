@@ -47,7 +47,6 @@ async def on_startup() -> None:
 
     i18n_middleware.setup(dispatcher=dp)
 
-
     dp.message.middleware(ThrottlingMiddleware())
     dp.callback_query.middleware(ThrottlingMiddleware())
 

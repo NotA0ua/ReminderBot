@@ -21,9 +21,9 @@ class UserMiddleware(BaseMiddleware):
         event_user: types.User = data["event_from_user"]
         session: AsyncSession = data["session"]
 
-        user_operations = UserOperations(session=session)
+        user_operations = UserOperations(session=session, user_id=event_user.id)
 
-        user = await user_operations.get_user(user_id=event_user.id)
+        user = await user_operations.get_user()
         if not user:
             user_language = event_user.language_code
 
@@ -31,7 +31,6 @@ class UserMiddleware(BaseMiddleware):
                 user_language = self.i18n_middleware.core.default_locale
 
             await user_operations.create_user(
-                user_id=event_user.id,
                 locale=user_language,
             )
 
