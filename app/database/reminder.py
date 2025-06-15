@@ -27,7 +27,6 @@ class ReminderOperations:
         )
 
         self.session.add(reminder)
-        await self.session.flush()
 
         return reminder
 
@@ -41,7 +40,6 @@ class ReminderOperations:
         reminder = await self.session.get(Reminder, reminder_id)
         if reminder and reminder.repeat_interval:
             reminder.trigger_time += timedelta(seconds=reminder.repeat_interval)
-            await self.session.flush()
             return reminder
 
         return None
@@ -61,7 +59,6 @@ class ReminderOperations:
         reminder = await self.session.get(Reminder, reminder_id)
         if reminder:
             reminder.active = not reminder.active
-            await self.session.flush()
             return reminder
 
         return None
@@ -81,5 +78,4 @@ class ReminderOperations:
         result = await self.session.execute(
             delete(Reminder).where(Reminder.id == reminder_id)
         )
-        await self.session.flush()
         return result.rowcount > 0

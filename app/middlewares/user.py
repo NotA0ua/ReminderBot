@@ -1,3 +1,4 @@
+import logging
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware, types
@@ -29,11 +30,9 @@ class UserMiddleware(BaseMiddleware):
             if user_language not in self.i18n_middleware.core.available_locales:
                 user_language = self.i18n_middleware.core.default_locale
 
-            user = await user_operations.create_user(
+            await user_operations.create_user(
                 user_id=event_user.id,
-                language=user_language,
+                locale=user_language,
             )
 
-        # update data and return handler
-        data["user"] = user
         return await handler(event, data)

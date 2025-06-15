@@ -12,7 +12,7 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    language: Mapped[str] = mapped_column(String(2), default="ru", nullable=False)
+    locale: Mapped[str] = mapped_column(String(2), default="ru", nullable=False)
 
 
 class Reminder(Base):
