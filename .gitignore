@@ -3,3 +3,4 @@
 .env
 database.db
 database.db-journal
+uv.lock

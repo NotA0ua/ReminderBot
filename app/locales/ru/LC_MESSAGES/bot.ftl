@@ -2,6 +2,6 @@ hello = 👋 Привет, _{ $user }_!
     Это *бот-напоминалка*. Он позволит вам с легкостью создавать напоминания.
 back = 🔙 Вернуться
 flag = 🇷🇺
-lang = {flag} Выберите язык:
-lang_button = {flag} RU
-lang_result = ✅
+locale = {flag} Выберите язык:
+locale_button = {flag} RU
+locale_result = ✅

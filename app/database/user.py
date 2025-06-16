@@ -23,10 +23,10 @@ class UserOperations:
         result = await self.session.execute(select(User).filter_by(id=self.user_id))
         return result.scalar_one_or_none()
 
-    async def update_language(self, locale: str) -> User | None:
+    async def update_locale(self, locale: str) -> User | None:
         user = await self.get_user()
         user.locale = locale
 
-        logging.info(f"User's language has been changed ({self.user_id} {locale})")
+        logging.info(f"User's locale has been changed ({self.user_id} {locale})")
 
         return user
