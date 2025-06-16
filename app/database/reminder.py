@@ -30,16 +30,18 @@ class ReminderOperations:
 
         return reminder
 
+    async def get_reminder(self, reminder_id: int) -> Reminder | None:
+        result = await self.session.execute(select(Reminder).filter_by(id=reminder_id))
+        return result.scalar_one_or_none()
+
     async def get_user_reminders(self, user_id: int) -> list[Reminder]:
-        result = await self.session.execute(
-            select(Reminder).filter_by(user_id=user_id, active=True)
-        )
+        result = await self.session.execute(select(Reminder).filter_by(user_id=user_id))
         return list(result.scalars().all())
 
     async def update_reminder_trigger_time(self, reminder_id: int) -> Reminder | None:
         reminder = await self.session.get(Reminder, reminder_id)
         if reminder and reminder.repeat_interval:
-            reminder.trigger_time += timedelta(seconds=reminder.repeat_interval)
+            reminder.trigger_time += timedelta(seconds=float(reminder.repeat_interval))
             return reminder
 
         return None
@@ -57,11 +59,13 @@ class ReminderOperations:
 
     async def update_active(self, reminder_id: int) -> Reminder | None:
         reminder = await self.session.get(Reminder, reminder_id)
-        if reminder:
-            reminder.active = not reminder.active
-            return reminder
-
-        return None
+        result = await self.session.execute(
+            update(Reminder)
+            .where(Reminder.id == reminder_id)
+            .values(active=reminder.active)
+            .returning(Reminder)
+        )
+        return result.scalar_one_or_none()
 
     async def update_description(
         self, reminder_id: int, description: str
@@ -78,4 +82,4 @@ class ReminderOperations:
         result = await self.session.execute(
             delete(Reminder).where(Reminder.id == reminder_id)
         )
-        return result.rowcount > 0
+        return result.rowcount() > 0

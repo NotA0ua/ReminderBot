@@ -1,11 +1,10 @@
-import logging
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware, types
 from aiogram_i18n import I18nMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import Database, UserOperations
+from app.database import UserOperations
 
 
 class UserMiddleware(BaseMiddleware):
@@ -30,8 +29,6 @@ class UserMiddleware(BaseMiddleware):
             if user_locale not in self.i18n_middleware.core.available_locales:
                 user_locale = self.i18n_middleware.core.default_locale
 
-            await user_operations.create_user(
-                locale=user_locale
-            )
+            await user_operations.create_user(locale=user_locale)
 
         return await handler(event, data)

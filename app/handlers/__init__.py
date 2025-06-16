@@ -1,5 +1,6 @@
 from aiogram import Router
 
+
 def setup_routers() -> Router:
     from . import start
     from . import locale
