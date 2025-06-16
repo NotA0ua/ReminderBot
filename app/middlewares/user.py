@@ -25,13 +25,13 @@ class UserMiddleware(BaseMiddleware):
 
         user = await user_operations.get_user()
         if not user:
-            user_language = event_user.language_code
+            user_locale = event_user.language_code
 
-            if user_language not in self.i18n_middleware.core.available_locales:
-                user_language = self.i18n_middleware.core.default_locale
+            if user_locale not in self.i18n_middleware.core.available_locales:
+                user_locale = self.i18n_middleware.core.default_locale
 
             await user_operations.create_user(
-                locale=user_language,
+                locale=user_locale
             )
 
         return await handler(event, data)
