@@ -4,5 +4,5 @@ from app.middlewares import AdminMiddleware
 
 router = Router()
 
-# @router.message()
-# async def
+@router.message()
+async def

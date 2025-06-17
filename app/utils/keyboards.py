@@ -15,8 +15,12 @@ def locale_keyboard() -> LanguageInlineMarkup:
     )
 
 
-def commands_keyboard() -> types.ReplyKeyboardMarkup:
+def commands_keyboard(is_admin: bool = False) -> types.ReplyKeyboardMarkup:
     kb = [[types.KeyboardButton(text=LazyProxy("locale_handler"))]]
+    if is_admin:
+        admin_kb = [types.KeyboardButton(text=LazyProxy("admin_handler"))]
+        kb.append(admin_kb)
+
     return types.ReplyKeyboardMarkup(
         keyboard=kb, resize_keyboard=True, is_persistent=True
     )

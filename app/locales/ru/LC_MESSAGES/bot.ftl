@@ -10,6 +10,7 @@ hello = 👋 Привет, _{ $user }_!
 # locale
 locale = {flag} Выберите язык:
 locale_button = {flag} RU
-locale_result = ✅
-
 locale_handler = {flag} Сменить язык
+
+# admin
+admin_handler = 👨‍💻 Админ панель
