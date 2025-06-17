@@ -3,7 +3,6 @@ back = 🔙 Back
 flag = 🇺🇸
 
 # start
-start_description = pupupu
 hello = 👋 Hello!
     This is a *reminder bot*. It allows you to easily create scheduled reminders.
 
@@ -13,5 +12,6 @@ locale_button = {flag}
 locale_handler = {flag} Change language
 
 # admin
+admin_message = 💻 Welcome to the admin panel!
 admin_handler = 👨‍💻 Admin panel
-exit_admin = 🚪 Exit
+admin_exit_handler = 🚪 Exit

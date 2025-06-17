@@ -8,8 +8,8 @@ def setup_admin_router() -> Router:
 
     router = Router()
 
-    router.message.middleware(AdminMiddleware)
-    router.callback_query.middleware(AdminMiddleware)
+    router.message.middleware(AdminMiddleware())
+    router.callback_query.middleware(AdminMiddleware())
 
     router.include_routers(
         admin.router
