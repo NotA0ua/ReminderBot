@@ -2,14 +2,14 @@ from aiogram import Router
 
 
 def setup_routers() -> Router:
-    from . import start
-    from . import locale
+    from .user import setup_user_router
+    from .admin import setup_admin_router
 
     router = Router()
 
     router.include_routers(
-        start.router,
-        locale.router,
+        setup_user_router(),
+        setup_admin_router(),
     )
 
     return router
