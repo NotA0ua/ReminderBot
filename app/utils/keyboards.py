@@ -25,6 +25,7 @@ def commands_keyboard(is_admin: bool = False) -> types.ReplyKeyboardMarkup:
         keyboard=kb, resize_keyboard=True, is_persistent=True
     )
 
+
 def admin_commands_keyboard() -> types.ReplyKeyboardMarkup:
     kb = [[types.KeyboardButton(text=LazyProxy("admin_exit_handler"))]]
 
