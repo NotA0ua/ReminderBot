@@ -10,11 +10,13 @@ router = Router(name=__name__)
 
 
 @router.message(CommandStart())
-async def start_handler(message: types.Message, i18n: I18nContext, session: AsyncSession) -> None:
+async def start_handler(message: types.Message, i18n: I18nContext, session: AsyncSession, user_id: int | None = None) -> None:
     # Check if user is admin
-    admin = await AdminOperations(session).get_admin(message.from_user.id)
+    if not user_id:
+        user_id = message.from_user.id
+    admin = await AdminOperations(session).get_admin(user_id)
 
     await message.answer(
-        i18n.get("hello", user=message.from_user.username),
+        i18n.get("hello"),
         reply_markup=commands_keyboard(admin is not None),
     )

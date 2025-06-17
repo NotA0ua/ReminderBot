@@ -31,7 +31,7 @@ async def change_locale_handler(
     await i18n.set_locale(locale=locale)
     await callback.message.delete()
     await session.commit()
-    await start_handler(callback.message, i18n, session)
+    await start_handler(callback.message, i18n, session, callback.from_user.id)
 
 
 @router.callback_query(F.data == "back_locale")

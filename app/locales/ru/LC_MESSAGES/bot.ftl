@@ -4,7 +4,7 @@ flag = 🇷🇺
 
 # start
 start_description = пупупуп
-hello = 👋 Привет, _{ $user }_!
+hello = 👋 Привет!
     Это *бот-напоминалка*. Он позволит вам с легкостью создавать напоминания.
 
 # locale
@@ -14,3 +14,4 @@ locale_handler = {flag} Сменить язык
 
 # admin
 admin_handler = 👨‍💻 Админ панель
+exit_admin = 🚪 Выйти
