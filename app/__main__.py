@@ -6,10 +6,12 @@ from contextlib import suppress
 from aiogram import Bot, Dispatcher, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import DeleteWebhook
 from aiogram_i18n import I18nMiddleware
 from aiogram_i18n.types import BotCommand
 from aiogram_i18n.cores import FluentRuntimeCore
+from aiogram_dialog import setup_dialogs
 
 from app import BOT_TOKEN
 from app.database import Database
@@ -21,8 +23,9 @@ from app.utils import UserManager
 
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
 
+storage = MemoryStorage()
 db = Database()
-dp = Dispatcher()
+dp = Dispatcher(storage=storage)
 
 
 async def on_startup() -> None:
@@ -49,6 +52,7 @@ async def on_startup() -> None:
 
     dp.message.middleware(ThrottlingMiddleware())
     dp.callback_query.middleware(ThrottlingMiddleware())
+    setup_dialogs(dp)
     await bot.set_my_commands(
         [BotCommand(command="start", description="ㅤ")],
         types.BotCommandScopeDefault(),

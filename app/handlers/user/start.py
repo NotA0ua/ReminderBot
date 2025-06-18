@@ -22,6 +22,6 @@ async def start_handler(
     admin = await AdminOperations(session).get_admin(user_id)
 
     await message.answer(
-        i18n.get("hello"),
+        i18n.get("start"),
         reply_markup=commands_keyboard(admin is not None),
     )
