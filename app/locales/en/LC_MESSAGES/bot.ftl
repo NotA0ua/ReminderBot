@@ -1,5 +1,6 @@
 # global
 back = 🔙 Back
+close = ❌ Close
 flag = 🇺🇸
 
 # start
@@ -14,5 +15,7 @@ locale_handler = {flag} Change language
 # admin
 admin_message = 💻 Welcome to the admin panel!
 admin_handler = 👨‍💻 Admin panel
+admins_handler = 👤 Admins
+admins_handler_message = 📜 The list of admins:
 admin_add_handler = 👤 Add admin
 admin_exit_handler = 🚪 Exit

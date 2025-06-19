@@ -1,5 +1,6 @@
 # global
 back = 🔙 Вернуться
+close = ❌ Закрыть
 flag = 🇷🇺
 
 # start
@@ -14,5 +15,8 @@ locale_handler = {flag} Сменить язык
 # admin
 admin_message = 💻 Добро пожаловать в админ-панель!
 admin_handler = 👨‍💻 Админ панель
-admin_add_handler = 👤 Добавить админа
+admins_handler = 👤 Админы
+admins_handler_message = 📜 Список админов:
+admin_add_handler = ➕ Добавить
+admin_add_message = 🪪 Введите id админа.
 admin_exit_handler = 🚪 Выйти
