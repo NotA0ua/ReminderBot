@@ -1,1 +1,1 @@
-from admins import Admins
+from .admins import Admins

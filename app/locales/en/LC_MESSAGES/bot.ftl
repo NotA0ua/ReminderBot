@@ -1,21 +1,28 @@
 # global
 back = 🔙 Back
 close = ❌ Close
+delete = 🗑️ Delete
 flag = 🇺🇸
 
 # start
-hello = 👋 Hello!
+start = 👋 Hello!
     This is a *reminder bot*. It allows you to easily create scheduled reminders.
 
 # locale
-locale = {flag} Choose language:
+locale = {flag} Choose *language*:
 locale_button = {flag}
 locale_handler = {flag} Change language
 
 # admin
-admin_message = 💻 Welcome to the admin panel!
+admin_message = 💻 Welcome to *the admin panel*!
+
 admin_handler = 👨‍💻 Admin panel
+
 admins_handler = 👤 Admins
-admins_handler_message = 📜 The list of admins:
-admin_add_handler = 👤 Add admin
+admins_message = 📜 The list of admins:
+admin_info = Admin @{ $username } - `{ $user_id }`
+
+admin_add_handler = ➕ Add admin
+admin_add_message = 🪪 Enter ID of the admin.
+
 admin_exit_handler = 🚪 Exit
