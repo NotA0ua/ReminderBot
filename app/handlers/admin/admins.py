@@ -64,7 +64,7 @@ async def admins_handler_getter(
 
 
 async def admin_info_getter(bot: Bot, dialog_manager: DialogManager, **_kwargs) -> dict:
-    user_id = dialog_manager.dialog_data.get("user_id")
+    user_id = dialog_manager.dialog_data["user_id"]
     username = (await bot.get_chat_member(user_id, user_id)).user.username
     return {
         "user_id": user_id,
@@ -72,7 +72,7 @@ async def admin_info_getter(bot: Bot, dialog_manager: DialogManager, **_kwargs) 
     }
 
 
-async def close_admins(
+async def admins_close(
     callback: types.CallbackQuery, _button: Button, manager: DialogManager
 ) -> None:
     await callback.message.delete()
@@ -84,6 +84,15 @@ async def admin_info(
 ) -> None:
     manager.dialog_data["user_id"] = int(manager.item_id)
     await manager.next()
+
+
+async def admin_delete(
+    _callback: types.CallbackQuery, _button: Button, manager: DialogManager
+) -> None:
+    user_id = manager.dialog_data["user_id"]
+    session = manager.middleware_data["session"]
+    await AdminOperations(session).delete_admin(user_id)
+    await manager.back()
 
 
 dialog = Dialog(
@@ -118,14 +127,14 @@ dialog = Dialog(
                 text=Format(" ⏭️"),
             ),
         ),
-        Button(I18NFormat("close"), id="admins_close", on_click=close_admins),
+        Button(I18NFormat("close"), id="admins_close", on_click=admins_close),
         getter=admins_handler_getter,
         state=Admins.admins,
     ),
     Window(
         I18NFormat("admin_info"),
         Format("{username} - `{user_id}`"),
-        Button(I18NFormat("delete"), id="admin_delete", on_click=...),
+        Button(I18NFormat("delete"), id="admin_delete", on_click=admin_delete),
         Back(I18NFormat("back"), id="admin_back"),
         getter=admin_info_getter,
         state=Admins.admin,

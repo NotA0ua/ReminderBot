@@ -28,4 +28,4 @@ class AdminOperations:
 
     async def delete_admin(self, user_id: int) -> bool:
         result = await self.session.execute(delete(Admin).where(Admin.id == user_id))
-        return result.rowcount() > 0
+        return result.rowcount > 0

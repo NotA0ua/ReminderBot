@@ -82,4 +82,4 @@ class ReminderOperations:
         result = await self.session.execute(
             delete(Reminder).where(Reminder.id == reminder_id)
         )
-        return result.rowcount() > 0
+        return result.rowcount > 0
