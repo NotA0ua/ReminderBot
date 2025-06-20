@@ -1,5 +1,3 @@
-import logging
-
 from aiogram import Router, types, Bot
 from aiogram_dialog import Dialog, Window, DialogManager, StartMode
 from aiogram_dialog.widgets.kbd import (
@@ -18,9 +16,9 @@ from aiogram_dialog.widgets.text import Format
 from aiogram_i18n import LazyFilter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import AdminOperations, Admin
-from app.utils import I18NFormat
+from app.database import AdminOperations
 from app.states import Admins
+from app.utils import I18NFormat
 
 ITEMS_PER_PAGE = 2
 ID_SCROLL = "admins_scroll"
@@ -31,8 +29,6 @@ router = Router()
 async def admins_handler_getter(
     bot: Bot, session: AsyncSession, dialog_manager: DialogManager, **_kwargs
 ) -> dict:
-    # session: AsyncSession = dialog_manager.middleware_data[""]
-
     admins = await AdminOperations(session).get_all_admins()
 
     current_page = await dialog_manager.find(ID_SCROLL).get_page()
@@ -49,9 +45,16 @@ async def admins_handler_getter(
 
     for admin in page_admins:
         user_admin = await bot.get_chat_member(admin.id, admin.id)
-        content.append([admin.id, user_admin.user.username if user_admin.user.username else user_admin.user.id])
-
-    logging.info(content)
+        content.append(
+            (
+                admin.id,
+                (
+                    user_admin.user.username
+                    if user_admin.user.username
+                    else user_admin.user.id
+                ),
+            )
+        )
 
     return {
         "pages": (len(admins) // ITEMS_PER_PAGE) + 1,
@@ -60,14 +63,34 @@ async def admins_handler_getter(
     }
 
 
-async def admin_info() -> None: ...
+async def admin_info_getter(bot: Bot, dialog_manager: DialogManager, **_kwargs) -> dict:
+    user_id = dialog_manager.dialog_data.get("user_id")
+    username = (await bot.get_chat_member(user_id, user_id)).user.username
+    return {
+        "user_id": user_id,
+        "username": f"@{username}" if username else user_id,
+    }
+
+
+async def close_admins(
+    callback: types.CallbackQuery, _button: Button, manager: DialogManager
+) -> None:
+    await callback.message.delete()
+    await manager.done()
+
+
+async def admin_info(
+    _callback: types.CallbackQuery, _button: Button, manager: DialogManager
+) -> None:
+    manager.dialog_data["user_id"] = int(manager.item_id)
+    await manager.next()
 
 
 dialog = Dialog(
     Window(
         I18NFormat("admins_message"),
         ListGroup(
-            Button(Format("{item[1]}"), id="admins", on_click=...),
+            Button(Format("{item[1]}"), id="admins", on_click=admin_info),
             item_id_getter=lambda i: i[0],
             items="content",
             id="admins_group",
@@ -95,14 +118,16 @@ dialog = Dialog(
                 text=Format(" ⏭️"),
             ),
         ),
-        Button(I18NFormat("close"), id="admins_close", on_click=...),
+        Button(I18NFormat("close"), id="admins_close", on_click=close_admins),
         getter=admins_handler_getter,
         state=Admins.admins,
     ),
     Window(
         I18NFormat("admin_info"),
+        Format("{username} - `{user_id}`"),
         Button(I18NFormat("delete"), id="admin_delete", on_click=...),
         Back(I18NFormat("back"), id="admin_back"),
+        getter=admin_info_getter,
         state=Admins.admin,
     ),
 )

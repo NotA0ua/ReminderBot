@@ -52,6 +52,7 @@ async def on_startup() -> None:
 
     dp.message.middleware(ThrottlingMiddleware())
     dp.callback_query.middleware(ThrottlingMiddleware())
+
     setup_dialogs(dp)
     await bot.set_my_commands(
         [BotCommand(command="start", description="ㅤ")],

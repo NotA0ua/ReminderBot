@@ -20,7 +20,7 @@ admin_handler = 👨‍💻 Admin panel
 
 admins_handler = 👤 Admins
 admins_message = 📜 The list of admins:
-admin_info = Admin @{ $username } - `{ $user_id }`
+admin_info = Admin
 
 admin_add_handler = ➕ Add admin
 admin_add_message = 🪪 Enter ID of the admin.
