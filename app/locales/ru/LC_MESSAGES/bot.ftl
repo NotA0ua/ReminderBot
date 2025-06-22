@@ -23,6 +23,7 @@ admins_message = 📜 Список админов:
 admin_info = Админ
 
 admin_add_handler = ➕ Добавить
-admin_add_message = 🪪 Введите id админа.
+admin_add_message = 🪪 Введите *ID* админа.
+admin_add_error = 🚨 *ID* должно быть числом!
 
 admin_exit_handler = 🚪 Выйти
