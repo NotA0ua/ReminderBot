@@ -145,5 +145,5 @@ router.include_router(dialog)
 
 
 @router.message(LazyFilter("admins_handler"))
-async def admins_handler(_message: types.Message, dialog_manager: DialogManager):
+async def admins_handler(message_: types.Message, dialog_manager: DialogManager) -> None:
     await dialog_manager.start(Admins.admins, mode=StartMode.RESET_STACK)
