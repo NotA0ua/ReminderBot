@@ -2,7 +2,7 @@ from typing import Callable, Dict, Awaitable, Any
 
 from aiogram import BaseMiddleware, types
 
-from app.database import AdminOperations
+from app.database import AdminsOperations
 
 
 class AdminMiddleware(BaseMiddleware):
@@ -13,7 +13,7 @@ class AdminMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         session = data["session"]
-        admin = AdminOperations(session)
+        admin = AdminsOperations(session)
         event_user: types.User = data["event_from_user"]
         if await admin.get_admin(event_user.id):
             return await handler(event, data)

@@ -1,39 +1,81 @@
 import logging
 from typing import Any
 
-from aiogram import Router, types
-from aiogram_dialog import Dialog, Window, DialogManager, StartMode
+from aiogram import Router, types, Bot
+from aiogram_dialog import Dialog, Window, DialogManager, StartMode, ChatEvent
 from aiogram_dialog.widgets.text import Format
 from aiogram_dialog.widgets.input import TextInput, ManagedTextInput
-from aiogram_dialog.widgets.kbd import Next, Button
-from aiogram_i18n import LazyFilter, I18nContext
+from aiogram_dialog.widgets.kbd import Next
+from aiogram_i18n import LazyFilter
 
+from app.database import AdminsOperations, UsersOperations
 from app.states import AdminAdd
-from app.utils import I18NFormat
+from app.utils import I18NFormat, dialog_close_button
 
 router = Router()
 
-async def admin_add_id_error(message: types.Message, dialog_: Any, manager: DialogManager, error_: ValueError):
+
+async def admin_add_id_error(
+    message: types.Message, _dialog: Any, manager: DialogManager, _error: ValueError
+):
     i18n = manager.middleware_data["i18n"]
-    await message.answer(i18n.get("admin_add_error"))
+    await message.answer(i18n.get("admin_add_type_error"))
+
+
+async def on_success(
+    message: types.Message,
+    _widget: ManagedTextInput[int],
+    manager: DialogManager,
+    data: int,
+):
+    session = manager.middleware_data["session"]
+    i18n = manager.middleware_data["i18n"]
+    admins = AdminsOperations(session)
+
+    if not await UsersOperations(session, data).get_user():
+        await message.answer(i18n.get("admin_add_user_error"))
+    elif await admins.get_admin(data):
+        await message.answer(i18n.get("admin_add_admin_error"))
+    else:
+        await admins.create_admin(data)
+        await manager.next()
+
+
+async def success_getter(bot: Bot, dialog_manager: DialogManager, **kwargs):
+    admin_id = dialog_manager.find("admin_id").get_value()
+    admin = await bot.get_chat_member(admin_id, admin_id)
+
+    username = admin.user.username
+
+    return {"admin_id": admin_id, "username": f"@{username} - " if username else ""}
 
 
 dialog = Dialog(
     Window(
         I18NFormat("admin_add_message"),
-        TextInput(id="country", on_success=Next(), type_factory=int, on_error=admin_add_id_error),
-        Button(I18NFormat("close"), id="admin_add_close"),
+        TextInput(
+            id="admin_id",
+            on_success=on_success,
+            type_factory=int,
+            on_error=admin_add_id_error,
+        ),
+        dialog_close_button,
         state=AdminAdd.id,
     ),
     Window(
-        Format(""),
-        Button(I18NFormat("close"), id="admin_add_close"),
+        I18NFormat("admin_add_success_message"),
+        Format("{username}`{admin_id}`"),
+        dialog_close_button,
         state=AdminAdd.success,
+        getter=success_getter,
     ),
 )
 
 router.include_router(dialog)
 
+
 @router.message(LazyFilter("admin_add_handler"))
-async def admin_add_handler(message_: types.Message, dialog_manager: DialogManager) -> None:
+async def admin_add_handler(
+    _message: types.Message, dialog_manager: DialogManager
+) -> None:
     await dialog_manager.start(AdminAdd.id, mode=StartMode.RESET_STACK)

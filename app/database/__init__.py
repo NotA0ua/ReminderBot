@@ -1,5 +1,5 @@
-from .models import User, Reminder, Admin
+from .models import Users, Reminders, Admins
 from .database import Database
-from .reminder import ReminderOperations
-from .user import UserOperations
-from .admin import AdminOperations
+from .reminder import RemindersOperations
+from .user import UsersOperations
+from .admin import AdminsOperations

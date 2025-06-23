@@ -24,6 +24,8 @@ admin_info = Admin
 
 admin_add_handler = ➕ Add admin
 admin_add_message = 🪪 Enter admin's *ID*.
-admin_add_error = 🚨 *ID* must be a number!
-
+admin_add_type_error = 🚨 *ID* must be a number!
+admin_add_user_error = 🚨 There is *no* such user!
+admin_add_admin_error = 🚨 This user id already an admin!
+admin_add_success_message = ✅ You have successfully added an admin!
 admin_exit_handler = 🚪 Exit

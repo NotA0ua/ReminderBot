@@ -4,7 +4,7 @@ from aiogram import BaseMiddleware, types
 from aiogram_i18n import I18nMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import UserOperations
+from app.database import UsersOperations
 
 
 class UserMiddleware(BaseMiddleware):
@@ -20,7 +20,7 @@ class UserMiddleware(BaseMiddleware):
         event_user: types.User = data["event_from_user"]
         session: AsyncSession = data["session"]
 
-        user_operations = UserOperations(session=session, user_id=event_user.id)
+        user_operations = UsersOperations(session=session, user_id=event_user.id)
 
         user = await user_operations.get_user()
         if not user:

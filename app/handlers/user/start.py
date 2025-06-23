@@ -3,7 +3,7 @@ from aiogram.filters import CommandStart
 from aiogram_i18n import I18nContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import AdminOperations
+from app.database import AdminsOperations
 from app.utils import commands_keyboard
 
 router = Router(name=__name__)
@@ -19,7 +19,7 @@ async def start_handler(
     # Check if user is admin
     if not user_id:
         user_id = message.from_user.id
-    admin = await AdminOperations(session).get_admin(user_id)
+    admin = await AdminsOperations(session).get_admin(user_id)
 
     await message.answer(
         i18n.get("start"),

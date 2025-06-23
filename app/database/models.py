@@ -8,14 +8,14 @@ class Base(DeclarativeBase):
     pass
 
 
-class User(Base):
+class Users(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     locale: Mapped[str] = mapped_column(String(2), default="ru", nullable=False)
 
 
-class Reminder(Base):
+class Reminders(Base):
     __tablename__ = "reminders"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -27,7 +27,7 @@ class Reminder(Base):
     active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
 
-class Admin(Base):
+class Admins(Base):
     __tablename__ = "admins"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

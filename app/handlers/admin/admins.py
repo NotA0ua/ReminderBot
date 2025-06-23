@@ -16,9 +16,9 @@ from aiogram_dialog.widgets.text import Format
 from aiogram_i18n import LazyFilter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import AdminOperations
+from app.database import AdminsOperations
 from app.states import Admins
-from app.utils import I18NFormat
+from app.utils import I18NFormat, dialog_close_button
 
 ITEMS_PER_PAGE = 2
 ID_SCROLL = "admins_scroll"
@@ -29,35 +29,29 @@ router = Router()
 async def admins_handler_getter(
     bot: Bot, session: AsyncSession, dialog_manager: DialogManager, **_kwargs
 ) -> dict:
-    admins = await AdminOperations(session).get_all_admins()
+    admins = await AdminsOperations(session).get_all_admins()
 
-    current_page = await dialog_manager.find(ID_SCROLL).get_page()
-    page_admins = (
-        admins[current_page * ITEMS_PER_PAGE :]
-        if len(admins) < ITEMS_PER_PAGE
-        else admins[
-            current_page * ITEMS_PER_PAGE : current_page * ITEMS_PER_PAGE
-            + ITEMS_PER_PAGE
-        ]
-    )
+    scroll = dialog_manager.find(ID_SCROLL)
+    current_page = await scroll.get_page()
 
-    content = list()
+    # Calculate pagination
+    start_index = current_page * ITEMS_PER_PAGE
+    end_index = start_index + ITEMS_PER_PAGE
+    page_admins = admins[start_index:end_index]
 
+    content = []
     for admin in page_admins:
         user_admin = await bot.get_chat_member(admin.id, admin.id)
-        content.append(
-            (
-                admin.id,
-                (
-                    user_admin.user.username
-                    if user_admin.user.username
-                    else user_admin.user.id
-                ),
-            )
-        )
+        username = user_admin.user.username
+        if username:
+            display = f"@{username}"
+        else:
+            display = str(user_admin.user.id)
+        content.append((admin.id, display))
 
+    total_pages = (len(admins) + ITEMS_PER_PAGE - 1) // ITEMS_PER_PAGE
     return {
-        "pages": (len(admins) // ITEMS_PER_PAGE) + 1,
+        "pages": total_pages,
         "current_page": current_page + 1,
         "content": content,
     }
@@ -72,13 +66,6 @@ async def admin_info_getter(bot: Bot, dialog_manager: DialogManager, **_kwargs) 
     }
 
 
-async def admins_close(
-    callback: types.CallbackQuery, _button: Button, manager: DialogManager
-) -> None:
-    await callback.message.delete()
-    await manager.done()
-
-
 async def admin_info(
     _callback: types.CallbackQuery, _button: Button, manager: DialogManager
 ) -> None:
@@ -91,7 +78,7 @@ async def admin_delete(
 ) -> None:
     user_id = manager.dialog_data["user_id"]
     session = manager.middleware_data["session"]
-    await AdminOperations(session).delete_admin(user_id)
+    await AdminsOperations(session).delete_admin(user_id)
     await manager.back()
 
 
@@ -127,7 +114,7 @@ dialog = Dialog(
                 text=Format(" ⏭️"),
             ),
         ),
-        Button(I18NFormat("close"), id="admins_close", on_click=admins_close),
+        dialog_close_button,
         getter=admins_handler_getter,
         state=Admins.admins,
     ),
@@ -145,5 +132,7 @@ router.include_router(dialog)
 
 
 @router.message(LazyFilter("admins_handler"))
-async def admins_handler(message_: types.Message, dialog_manager: DialogManager) -> None:
+async def admins_handler(
+    _message: types.Message, dialog_manager: DialogManager
+) -> None:
     await dialog_manager.start(Admins.admins, mode=StartMode.RESET_STACK)
