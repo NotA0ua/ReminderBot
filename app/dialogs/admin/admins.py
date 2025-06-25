@@ -1,5 +1,5 @@
-from aiogram import Router, types, Bot
-from aiogram_dialog import Dialog, Window, DialogManager, StartMode
+from aiogram import types, Bot
+from aiogram_dialog import Dialog, Window, DialogManager
 from aiogram_dialog.widgets.kbd import (
     Button,
     Back,
@@ -13,17 +13,14 @@ from aiogram_dialog.widgets.kbd import (
     LastPage,
 )
 from aiogram_dialog.widgets.text import Format
-from aiogram_i18n import LazyFilter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import AdminsOperations
+from app.dialogs.widgets import I18NFormat, button_close
 from app.states import Admins
-from app.utils import I18NFormat, dialog_close_button
 
 ITEMS_PER_PAGE = 2
 ID_SCROLL = "admins_scroll"
-
-router = Router()
 
 
 async def admins_handler_getter(
@@ -34,7 +31,6 @@ async def admins_handler_getter(
     scroll = dialog_manager.find(ID_SCROLL)
     current_page = await scroll.get_page()
 
-    # Calculate pagination
     start_index = current_page * ITEMS_PER_PAGE
     end_index = start_index + ITEMS_PER_PAGE
     page_admins = admins[start_index:end_index]
@@ -114,7 +110,7 @@ dialog = Dialog(
                 text=Format(" ⏭️"),
             ),
         ),
-        dialog_close_button,
+        button_close,
         getter=admins_handler_getter,
         state=Admins.admins,
     ),
@@ -127,12 +123,3 @@ dialog = Dialog(
         state=Admins.admin,
     ),
 )
-
-router.include_router(dialog)
-
-
-@router.message(LazyFilter("admins_handler"))
-async def admins_handler(
-    _message: types.Message, dialog_manager: DialogManager
-) -> None:
-    await dialog_manager.start(Admins.admins, mode=StartMode.RESET_STACK)

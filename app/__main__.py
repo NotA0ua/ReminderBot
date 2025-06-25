@@ -8,10 +8,10 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import DeleteWebhook
-from aiogram_i18n import I18nMiddleware
-from aiogram_i18n.types import BotCommand
-from aiogram_i18n.cores import FluentRuntimeCore
 from aiogram_dialog import setup_dialogs
+from aiogram_i18n import I18nMiddleware
+from aiogram_i18n.cores import FluentRuntimeCore
+from aiogram_i18n.types import BotCommand
 
 from app import BOT_TOKEN
 from app.database import Database
@@ -36,7 +36,9 @@ async def on_startup() -> None:
     await db.init_db()
 
     router = setup_routers()
-    dp.include_router(router)
+    dp.include_routers(router)
+
+    setup_dialogs(dp)
 
     # Middlewares
     i18n_middleware = I18nMiddleware(
@@ -53,7 +55,6 @@ async def on_startup() -> None:
     dp.message.middleware(ThrottlingMiddleware())
     dp.callback_query.middleware(ThrottlingMiddleware())
 
-    setup_dialogs(dp)
     await bot.set_my_commands(
         [BotCommand(command="start", description="ㅤ")],
         types.BotCommandScopeDefault(),

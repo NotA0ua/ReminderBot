@@ -1,8 +1,8 @@
 from aiogram import types
-from aiogram_dialog import DialogManager
+from aiogram_dialog.api.protocols import DialogManager
 from aiogram_dialog.widgets.kbd import Button
 
-from app.utils import I18NFormat
+from . import I18NFormat
 
 
 async def dialog_close(
@@ -12,6 +12,4 @@ async def dialog_close(
     await manager.done()
 
 
-dialog_close_button = Button(
-    I18NFormat("close"), id="admin_add_close", on_click=dialog_close
-)
+button_close = Button(I18NFormat("close"), id="admin_add_close", on_click=dialog_close)

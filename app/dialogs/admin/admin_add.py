@@ -1,18 +1,13 @@
-import logging
 from typing import Any
 
-from aiogram import Router, types, Bot
-from aiogram_dialog import Dialog, Window, DialogManager, StartMode, ChatEvent
-from aiogram_dialog.widgets.text import Format
+from aiogram import types, Bot
+from aiogram_dialog import Dialog, Window, DialogManager
 from aiogram_dialog.widgets.input import TextInput, ManagedTextInput
-from aiogram_dialog.widgets.kbd import Next
-from aiogram_i18n import LazyFilter
+from aiogram_dialog.widgets.text import Format
 
 from app.database import AdminsOperations, UsersOperations
 from app.states import AdminAdd
-from app.utils import I18NFormat, dialog_close_button
-
-router = Router()
+from app.dialogs import I18NFormat, button_close
 
 
 async def admin_add_id_error(
@@ -59,23 +54,14 @@ dialog = Dialog(
             type_factory=int,
             on_error=admin_add_id_error,
         ),
-        dialog_close_button,
+        button_close,
         state=AdminAdd.id,
     ),
     Window(
         I18NFormat("admin_add_success_message"),
         Format("{username}`{admin_id}`"),
-        dialog_close_button,
+        button_close,
         state=AdminAdd.success,
         getter=success_getter,
     ),
 )
-
-router.include_router(dialog)
-
-
-@router.message(LazyFilter("admin_add_handler"))
-async def admin_add_handler(
-    _message: types.Message, dialog_manager: DialogManager
-) -> None:
-    await dialog_manager.start(AdminAdd.id, mode=StartMode.RESET_STACK)
